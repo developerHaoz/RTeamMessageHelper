@@ -7,11 +7,15 @@
     android:orientation="vertical"
     tools:context="com.developerhaoz.rteammessagehelper.MainActivity">
 
+    <include
+        layout="@layout/part_app_toolbar"
+        />
+
     <Button
         android:id="@+id/contact_btn_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test"
+        android:text="全选"
         />
 
     <android.support.v7.widget.RecyclerView

@@ -8,11 +8,10 @@
         layout="@layout/part_app_toolbar"
         />
 
-    <EditText
-        android:id="@+id/display_message_et_message"
+    <TextView
+        android:id="@+id/display_message_tv_message"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="@drawable/shape_add_diary_title"
         android:enabled="true"
         android:gravity="center"
         android:maxLines="10"
@@ -24,10 +23,11 @@
         />
 
     <Button
+        android:id="@+id/display_message_btn_select"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:text="发送短信"
+        android:text="选择人员"
         android:layout_gravity="center"
         />
 

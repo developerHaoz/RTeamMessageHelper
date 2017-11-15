@@ -1,4 +1,4 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import butterknife.BindView;
+import com.developerhaoz.rteammessagehelper.R;
+
 import butterknife.ButterKnife;
 
 /**
@@ -21,16 +23,14 @@ import butterknife.ButterKnife;
 
 public class DisplayMessageActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
-    @BindView(R.id.app_toolbar)
     Toolbar mAppToolbar;
-    @BindView(R.id.display_message_et_message)
-    TextView mEtMessage;
+    TextView mTvMessage;
+    Button mBtnSelect;
 
     public static final String KEY_MESSAGE = "key_message";
 
-    public static void startActivity(Context context, String message){
+    public static void startActivity(Context context, String message) {
         Intent intent = new Intent(context, DisplayMessageActivity.class);
         intent.putExtra(KEY_MESSAGE, message);
         context.startActivity(intent);
@@ -44,20 +44,35 @@ public class DisplayMessageActivity extends AppCompatActivity {
         initView();
         initToolbar();
         Intent intent = getIntent();
-        if(getIntent() != null){
+        if (getIntent() != null) {
             String message = intent.getStringExtra(KEY_MESSAGE);
-            mEtMessage.setText(message);
+            mTvMessage.setText(message);
         }
+
+        mBtnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SelectContactsActivity.startActivity(DisplayMessageActivity.this, mTvMessage.getText().toString());
+            }
+        });
 
     }
 
     private void initView() {
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         mAppToolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        mEtMessage = (EditText) findViewById(R.id.display_message_et_message);
+        mTvMessage = (TextView) findViewById(R.id.display_message_tv_message);
+        mBtnSelect = (Button) findViewById(R.id.display_message_btn_select);
     }
 
     private void initToolbar() {
+        mAppToolbar.setNavigationIcon(null);
+        mAppToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mToolbarTitle.setText("短信预览");
     }
 }

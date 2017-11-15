@@ -1,4 +1,4 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +8,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.developerhaoz.rteammessagehelper.R;
+import com.developerhaoz.rteammessagehelper.bean.ContactBean;
+import com.developerhaoz.rteammessagehelper.util.GsonUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +47,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public void onBindViewHolder(final ContactViewHolder holder, final int position) {
-        holder.tvName.setText(mContactBeanList.get(position).getName());
+        final ContactBean contactBean = mContactBeanList.get(position);
+        holder.tvName.setText(contactBean.getName());
         final LinearLayout linearLayout = holder.mLinearLayout;
         final CheckBox checkBox = holder.checked;
         if(TYPE_SENDMESSAGE == mType){
@@ -55,7 +60,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onClick();
+                    mListener.onClick(contactBean);
                 }
             });
         }
@@ -87,7 +92,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
         checkBox.setChecked(mCheckMap.containsKey(position));
 
-        if(MainActivity.isAll){
+        if(SelectContactsActivity.isAll){
             checkBox.setChecked(true);
         }else{
             checkBox.setChecked(false);
@@ -103,7 +108,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
     public interface OnContactClickListener{
-        void onClick();
+        void onClick(ContactBean contactBean);
     }
 
     public void setOnClickListener(OnContactClickListener listener){

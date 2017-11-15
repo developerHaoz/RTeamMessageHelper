@@ -1,4 +1,4 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -114,6 +114,12 @@ public class ContactBean implements Parcelable {
     }
 
     public ContactBean() {
+    }
+
+    public ContactBean(String grade, String name, String phone){
+        this.grade = grade;
+        this.name = name;
+        this.phone = phone;
     }
 
     protected ContactBean(Parcel in) {

@@ -1,4 +1,4 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.developerhaoz.rteammessagehelper.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,8 +28,6 @@ public class EditMessageActivity extends AppCompatActivity {
     EditText mEtActivityName;
     @BindView(R.id.edit_message_et_activity_time)
     EditText mEtActivityTime;
-    @BindView(R.id.edit_message_et_activity_content)
-    EditText mEtActivityContent;
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
     @BindView(R.id.app_toolbar)
@@ -51,16 +51,22 @@ public class EditMessageActivity extends AppCompatActivity {
     private void initToolbar() {
         initView();
         mToolbarTitle.setText("编辑短信");
+        mAppToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mToolbarTip.setText("预览");
         mToolbarTip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StringBuilder stringBuilder = new StringBuilder();
-                String prefix = "「广工轮俱」亲爱的广工轮俱成员你好，广工轮俱将于";
+                String prefix = "「广工轮俱」亲爱的广工轮俱 R13 成员苟雅莉你好，广工轮俱将于";
                 stringBuilder.append(prefix);
                 stringBuilder.append(mEtActivityTime.getText().toString());
                 stringBuilder.append("进行" + mEtActivityName.getText().toString());
-                stringBuilder.append("请准时参加");
+                stringBuilder.append(",请准时参加。");
                 DisplayMessageActivity.startActivity(EditMessageActivity.this, String.valueOf(stringBuilder));
             }
         });
@@ -70,7 +76,6 @@ public class EditMessageActivity extends AppCompatActivity {
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         mToolbarTip = (TextView) findViewById(R.id.toolbar_tip);
         mEtActivityName = (EditText) findViewById(R.id.edit_message_et_activity_name);
-        mEtActivityContent = (EditText) findViewById(R.id.edit_message_et_activity_content);
         mEtActivityTime = (EditText) findViewById(R.id.edit_message_et_activity_time);
     }
 }

@@ -27,7 +27,7 @@
         android:layout_gravity="right"
         android:maxLines="1"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:paddingRight="24dp"
         />
 

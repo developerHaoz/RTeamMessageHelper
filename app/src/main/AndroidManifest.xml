@@ -19,14 +19,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".EditMessageActivity">
+        <activity
+            android:name=".ui.EditMessageActivity"
+            android:windowSoftInputMode="adjustPan"
+            >
         </activity>
 
-        <activity android:name=".DisplayMessageActivity">
+        <activity android:name=".ui.DisplayMessageActivity">
         </activity>
 
-        <activity android:name=".PersonInfoActivity">
+        <activity android:name=".ui.PersonInfoActivity">
         </activity>
+
+        <activity android:name=".ui.SelectContactsActivity"/>
 
     </application>
 

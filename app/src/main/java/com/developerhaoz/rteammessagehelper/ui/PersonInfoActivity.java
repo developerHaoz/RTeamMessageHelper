@@ -1,10 +1,13 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.developerhaoz.rteammessagehelper.bean.ContactBean;
+import com.developerhaoz.rteammessagehelper.R;
 
 /**
  * 个人资料详情的 Activity
@@ -33,7 +36,6 @@ public class PersonInfoActivity extends AppCompatActivity {
         if(intent != null){
             Bundle bundle = intent.getExtras();
             ContactBean contactBean = (ContactBean) bundle.get(KEY_CONTACT);
-
         }
     }
 }

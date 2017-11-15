@@ -1,5 +1,6 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.util;
 
+import com.developerhaoz.rteammessagehelper.bean.ContactBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hans.alpha.utils.JSONUtil;
@@ -24,11 +25,25 @@ public class GsonUtil {
         if (STAUTS_OK.equals(status)) {
             Gson gson = new Gson();
             String data = JSONUtil.getString(contactsJson, "data", "");
-            Type type = new TypeToken<List<ContactBean>>() {}.getType();
+            Type type = new TypeToken<List<ContactBean>>() {
+            }.getType();
             List<ContactBean> contactBeanList = gson.fromJson(data, type);
             return contactBeanList;
         }
         return null;
+    }
+
+//    public static List<SendContactBean> getSendContactList(List<ContactBean> contactBeanList){
+//        List<SendContactBean> result = new ArrayList<>();
+//        for (ContactBean contactBean : contactBeanList) {
+//            result.add(new SendContactBean())
+//        }
+//    }
+
+    public static String getContactsJson(List<ContactBean> contactBeanList) {
+        Gson gson = new Gson();
+        String result = gson.toJson(contactBeanList);
+        return result;
     }
 
     public static boolean isEmpty(Collection collection) {

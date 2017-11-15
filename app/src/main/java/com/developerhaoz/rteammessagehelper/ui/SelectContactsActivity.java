@@ -1,8 +1,9 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,16 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.developerhaoz.rteammessagehelper.R;
 import com.developerhaoz.rteammessagehelper.bean.ContactBean;
-import com.developerhaoz.rteammessagehelper.ui.ContactsAdapter;
-import com.developerhaoz.rteammessagehelper.ui.EditMessageActivity;
-import com.developerhaoz.rteammessagehelper.ui.PasswordDialogFragment;
-import com.developerhaoz.rteammessagehelper.ui.PersonInfoDialogFragment;
+import com.developerhaoz.rteammessagehelper.util.GsonUtil;
 import com.developerhaoz.rteammessagehelper.util.MessageApi;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,71 +30,65 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * 主页面的 Activity
- *
  * @author Haoz
- * @date 2017/11/11.
+ * @date 2017/11/14.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class SelectContactsActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
+    @BindView(R.id.toolbar_tip)
     TextView mToolbarTip;
     @BindView(R.id.app_toolbar)
     Toolbar mAppToolbar;
     @BindView(R.id.contact_btn_test)
-    Button mContactBtnTest;
+    Button mBtnTest;
     @BindView(R.id.contact_rv_contact)
-    RecyclerView mRvContacts;
+    RecyclerView mRvContact;
 
-    private List<ContactBean> mContactBeanList = new ArrayList<>();
+    private ContactsAdapter mAdapter;
+    private List<ContactBean> mContactList = new ArrayList<>();
     private List<ContactBean> mCheckContactList = new ArrayList<>();
-    private Map<Integer, Boolean> mCheckMap = new HashMap<>();
-    private ContactsAdapter adatper;
+    public static boolean isAll = false;
+    private static final String KEY_MESSAGE = "key_message";
+    private String message;
 
-    private static final int SIZE_CONTACT = 20;
-    private static final String PASSWORD = "RTeam666";
-
-    public static void startActivity(Context context){
-        Intent intent = new Intent(context, MainActivity.class);
+    public static void startActivity(Context context, String message) {
+        Intent intent = new Intent(context, SelectContactsActivity.class);
+        intent.putExtra(KEY_MESSAGE, message);
         context.startActivity(intent);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initView();
         initToolbar();
         initRecyclerView();
+        Intent intent = getIntent();
+        if (intent != null) {
+            message = intent.getStringExtra(KEY_MESSAGE);
+        }
     }
 
     private void initToolbar() {
-        mContactBtnTest.setVisibility(View.GONE);
-        mToolbarTitle.setText("轮俱小助手");
-        mToolbarTip.setText("短信");
-        mToolbarTip.setOnClickListener(new View.OnClickListener() {
+        mToolbarTitle.setText("选择人员");
+        mToolbarTip.setText("确定");
+        mAppToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PasswordDialogFragment dialogFragment = PasswordDialogFragment.newInstance();
-                dialogFragment.setOnResultListener(new PasswordDialogFragment.OnResultListener() {
-                    @Override
-                    public void onDataResult(String password) {
-//                        if(PASSWORD.equals(password)){
-                            EditMessageActivity.startActivity(MainActivity.this);
-//                        }else {
-//                            Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
-//                        }
-                    }
-                });
-                dialogFragment.show(MainActivity.this.getSupportFragmentManager(), dialogFragment.getClass().getSimpleName());
+                finish();
             }
         });
+        mToolbarTip.setOnClickListener(SelectContactsActivity.this);
+        mBtnTest.setOnClickListener(SelectContactsActivity.this);
     }
 
     private void initRecyclerView() {
+
         Observable.create(new Observable.OnSubscribe<List<ContactBean>>() {
             @Override
             public void call(Subscriber<? super List<ContactBean>> subscriber) {
@@ -121,16 +113,17 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(List<ContactBean> s) {
-                        adatper = new ContactsAdapter(s, ContactsAdapter.TYPE_CONTACTS);
-                        adatper.setOnClickListener(new ContactsAdapter.OnContactClickListener() {
+                        mContactList = s;
+                        mAdapter = new ContactsAdapter(mContactList, ContactsAdapter.TYPE_SENDMESSAGE);
+                        mAdapter.setOnClickListener(new ContactsAdapter.OnContactClickListener() {
                             @Override
                             public void onClick(ContactBean contactBean) {
                                 PersonInfoDialogFragment personInfoDialogFragment = PersonInfoDialogFragment.newInstance(contactBean);
-                                personInfoDialogFragment.show(MainActivity.this.getSupportFragmentManager(), personInfoDialogFragment.getClass().getSimpleName());
+                                personInfoDialogFragment.show(SelectContactsActivity.this.getSupportFragmentManager(), personInfoDialogFragment.getClass().getSimpleName());
                             }
                         });
-                        mRvContacts.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                        mRvContacts.setAdapter(adatper);
+                        mRvContact.setLayoutManager(new LinearLayoutManager(SelectContactsActivity.this));
+                        mRvContact.setAdapter(mAdapter);
                     }
                 });
 
@@ -139,9 +132,29 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         mToolbarTip = (TextView) findViewById(R.id.toolbar_tip);
-        mAppToolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        mContactBtnTest = (Button) findViewById(R.id.contact_btn_test);
-        mRvContacts = (RecyclerView) findViewById(R.id.contact_rv_contact);
+        mRvContact = (RecyclerView) findViewById(R.id.contact_rv_contact);
+        mBtnTest = (Button) findViewById(R.id.contact_btn_test);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.toolbar_tip:
+                Map map = ContactsAdapter.mCheckMap;
+                for (int i = 0; i < mContactList.size(); i++) {
+                    if (map.containsKey(i)) {
+                        mCheckContactList.add(mContactList.get(i));
+                    }
+                }
+                String contactsJson = GsonUtil.getContactsJson(mCheckContactList);
+
+                break;
+            case R.id.contact_btn_test:
+                isAll = !isAll;
+                mAdapter.notifyDataSetChanged();
+                break;
+            default:
+                break;
+        }
+    }
 }

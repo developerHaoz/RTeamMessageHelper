@@ -1,5 +1,6 @@
-package com.developerhaoz.rteammessagehelper;
+package com.developerhaoz.rteammessagehelper.util;
 
+import com.developerhaoz.rteammessagehelper.bean.ContactBean;
 import com.hans.alpha.network.RequestCall;
 import com.hans.alpha.network.builder.GetBuilder;
 import com.hans.alpha.network.builder.PostFormBuilder;

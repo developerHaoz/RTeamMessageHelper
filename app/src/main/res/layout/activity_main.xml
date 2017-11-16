@@ -5,24 +5,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.developerhaoz.rteammessagehelper.MainActivity">
+    tools:context="com.developerhaoz.rteammessagehelper.MainActivity"
+    android:background="@color/white"
+    android:paddingBottom="12dp"
+    >
 
     <include
         layout="@layout/part_app_toolbar"
         />
 
-    <Button
-        android:id="@+id/contact_btn_test"
+    <RelativeLayout
+        android:id="@+id/main_rl_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="全选"
-        />
+        android:layout_height="32dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/shape_search"
+        >
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/contact_rv_contact"
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignBottom="@+id/main_tv_search"
+            android:layout_marginBottom="1dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@+id/main_tv_search"
+            android:layout_toStartOf="@+id/main_tv_search"
+            android:src="@drawable/search3"
+            />
+
+        <TextView
+            android:id="@+id/main_tv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="搜索"
+            android:textColor="#a6a6a6"
+            android:paddingLeft="2dp"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/contact_rv_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
 
 </LinearLayout>

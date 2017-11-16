@@ -33,6 +33,11 @@
 
         <activity android:name=".ui.SelectContactsActivity"/>
 
+        <activity android:name=".ui.TestActivity">
+        </activity>
+
+        <activity android:name=".ui.SearchContactsActivity"/>
+
     </application>
 
 </manifest>

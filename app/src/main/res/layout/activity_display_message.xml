@@ -8,27 +8,38 @@
         layout="@layout/part_app_toolbar"
         />
 
-    <TextView
-        android:id="@+id/display_message_tv_message"
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:enabled="true"
-        android:gravity="center"
-        android:maxLines="10"
-        android:minLines="8"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:scrollbars="vertical"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_margin="24dp"
-        />
+        >
+
+        <TextView
+            android:id="@+id/display_message_tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:enabled="true"
+            android:gravity="center"
+            android:maxLines="10"
+            android:minLines="8"
+            android:lineSpacingExtra="2dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scrollbars="vertical"
+            />
+    </android.support.v7.widget.CardView>
 
     <Button
         android:id="@+id/display_message_btn_select"
         android:layout_width="128dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="选择人员"
+        android:layout_height="36dp"
         android:layout_gravity="center"
+        android:text="选择人员"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_button"
+        android:textSize="16sp"
         />
 
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.developerhaoz.rteammessagehelper.R;
 
@@ -61,18 +62,27 @@ public class EditMessageActivity extends AppCompatActivity {
         mToolbarTip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StringBuilder stringBuilder = new StringBuilder();
-                String prefix = "「广工轮俱」亲爱的广工轮俱 R13 成员苟雅莉你好，广工轮俱将于";
-                stringBuilder.append(prefix);
-                stringBuilder.append(mEtActivityTime.getText().toString());
-                stringBuilder.append("进行" + mEtActivityName.getText().toString());
-                stringBuilder.append(",请准时参加。");
-                DisplayMessageActivity.startActivity(EditMessageActivity.this, String.valueOf(stringBuilder));
+                String time = mEtActivityTime.getText().toString();
+                String activityName = mEtActivityName.getText().toString();
+
+                if("".equals(time) || "".equals(activityName)){
+                    Toast.makeText(EditMessageActivity.this, "活动名称和活动时间不能为空", Toast.LENGTH_SHORT).show();
+                }else{
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String prefix = "「广工轮俱」亲爱的广工轮俱 R13 成员苟雅莉你好，广工轮俱将于";
+                    stringBuilder.append(prefix);
+                    stringBuilder.append(time);
+                    stringBuilder.append("进行" + activityName);
+                    stringBuilder.append(",请准时参加。");
+                    DisplayMessageActivity.startActivity(EditMessageActivity.this, String.valueOf(stringBuilder));
+                }
+
             }
         });
     }
 
     private void initView() {
+        mAppToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         mToolbarTip = (TextView) findViewById(R.id.toolbar_tip);
         mEtActivityName = (EditText) findViewById(R.id.edit_message_et_activity_name);

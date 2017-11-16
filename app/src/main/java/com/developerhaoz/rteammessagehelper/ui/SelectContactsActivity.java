@@ -4,16 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.developerhaoz.rteammessagehelper.R;
 import com.developerhaoz.rteammessagehelper.bean.ContactBean;
+import com.developerhaoz.rteammessagehelper.bean.SendContactBean;
+import com.developerhaoz.rteammessagehelper.ui.dialog.DialogFragmentHelper;
 import com.developerhaoz.rteammessagehelper.util.GsonUtil;
 import com.developerhaoz.rteammessagehelper.util.MessageApi;
 
@@ -42,10 +46,13 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     TextView mToolbarTip;
     @BindView(R.id.app_toolbar)
     Toolbar mAppToolbar;
-    @BindView(R.id.contact_btn_test)
-    Button mBtnTest;
     @BindView(R.id.contact_rv_contact)
     RecyclerView mRvContact;
+    CheckBox mCbAllCheck;
+    TextView mTvPin;
+    TextView mTvSelectAll;
+    ImageView mIvPin;
+    ImageView mIvSelectAll;
 
     private ContactsAdapter mAdapter;
     private List<ContactBean> mContactList = new ArrayList<>();
@@ -53,6 +60,7 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     public static boolean isAll = false;
     private static final String KEY_MESSAGE = "key_message";
     private String message;
+    private DialogFragment mDialogFragment;
 
     public static void startActivity(Context context, String message) {
         Intent intent = new Intent(context, SelectContactsActivity.class);
@@ -63,7 +71,7 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_select_contacts);
         ButterKnife.bind(this);
         initView();
         initToolbar();
@@ -84,11 +92,14 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
             }
         });
         mToolbarTip.setOnClickListener(SelectContactsActivity.this);
-        mBtnTest.setOnClickListener(SelectContactsActivity.this);
+        mTvPin.setOnClickListener(SelectContactsActivity.this);
+        mIvPin.setOnClickListener(SelectContactsActivity.this);
+        mTvSelectAll.setOnClickListener(SelectContactsActivity.this);
+        mIvSelectAll.setOnClickListener(SelectContactsActivity.this);
     }
 
     private void initRecyclerView() {
-
+        mDialogFragment = DialogFragmentHelper.showProgress(getSupportFragmentManager(), "正在获取会员信息...");
         Observable.create(new Observable.OnSubscribe<List<ContactBean>>() {
             @Override
             public void call(Subscriber<? super List<ContactBean>> subscriber) {
@@ -124,16 +135,26 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
                         });
                         mRvContact.setLayoutManager(new LinearLayoutManager(SelectContactsActivity.this));
                         mRvContact.setAdapter(mAdapter);
+                        mDialogFragment.dismiss();
                     }
                 });
 
     }
 
     private void initView() {
+        mAppToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         mToolbarTip = (TextView) findViewById(R.id.toolbar_tip);
         mRvContact = (RecyclerView) findViewById(R.id.contact_rv_contact);
-        mBtnTest = (Button) findViewById(R.id.contact_btn_test);
+        mTvPin = (TextView) findViewById(R.id.main_tv_pin);
+        mTvSelectAll = (TextView) findViewById(R.id.main_tv_select_all);
+        mIvPin = (ImageView) findViewById(R.id.main_iv_pin);
+        mIvSelectAll = (ImageView) findViewById(R.id.main_iv_select_all);
+    }
+
+    private void allSelect() {
+        isAll = !isAll;
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -146,12 +167,20 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
                         mCheckContactList.add(mContactList.get(i));
                     }
                 }
-                String contactsJson = GsonUtil.getContactsJson(mCheckContactList);
-
+                List<SendContactBean> sendContactList = GsonUtil.getSendContactList(mCheckContactList);
+                String contactsJson = GsonUtil.getContactsJson(sendContactList);
                 break;
-            case R.id.contact_btn_test:
-                isAll = !isAll;
-                mAdapter.notifyDataSetChanged();
+            case R.id.main_tv_pin:
+                mRvContact.scrollToPosition(0);
+                break;
+            case R.id.main_iv_pin:
+                mRvContact.scrollToPosition(0);
+                break;
+            case R.id.main_tv_select_all:
+                allSelect();
+                break;
+            case R.id.main_iv_select_all:
+                allSelect();
                 break;
             default:
                 break;

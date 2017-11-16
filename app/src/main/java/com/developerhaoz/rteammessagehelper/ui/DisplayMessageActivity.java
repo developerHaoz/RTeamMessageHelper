@@ -66,7 +66,6 @@ public class DisplayMessageActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        mAppToolbar.setNavigationIcon(null);
         mAppToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

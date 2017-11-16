@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.developerhaoz.rteammessagehelper.MainActivity"
+    android:background="#f0f0f0"
+    android:paddingBottom="12dp"
+    >
+
+    <include
+        layout="@layout/part_app_toolbar"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/contact_rv_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <RelativeLayout
+            android:id="@+id/main_rl_float_window"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:alpha="100"
+            android:background="@drawable/shape_float_window"
+            android:padding="8dp"
+            android:layout_margin="8dp"
+            >
+
+            <TextView
+                android:id="@+id/main_tv_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/main_tv_pin"
+                android:layout_toRightOf="@+id/main_tv_pin"
+                android:gravity="center"
+                android:text="全选"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/main_tv_pin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/main_tv_select_all"
+                android:layout_alignBottom="@+id/main_tv_select_all"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:text="回到顶部"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:id="@+id/main_iv_pin"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="19dp"
+                android:layout_marginLeft="19dp"
+                android:layout_alignLeft="@+id/main_tv_pin"
+                android:src="@drawable/pin"/>
+
+            <ImageView
+                android:id="@+id/main_iv_select_all"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_alignLeft="@+id/main_tv_select_all"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/main_tv_select_all"
+                android:src="@drawable/select_all"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

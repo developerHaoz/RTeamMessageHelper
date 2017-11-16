@@ -17,6 +17,12 @@ public class SendContactBean {
     private String name;
     private String phone;
 
+    public SendContactBean(String grade, String name, String phone) {
+        this.grade = grade;
+        this.name = name;
+        this.phone = phone;
+    }
+
     public String getGrade() {
         return grade;
     }

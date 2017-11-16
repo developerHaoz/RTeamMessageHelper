@@ -1,11 +1,13 @@
 package com.developerhaoz.rteammessagehelper.util;
 
 import com.developerhaoz.rteammessagehelper.bean.ContactBean;
+import com.developerhaoz.rteammessagehelper.bean.SendContactBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hans.alpha.utils.JSONUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,14 +35,15 @@ public class GsonUtil {
         return null;
     }
 
-//    public static List<SendContactBean> getSendContactList(List<ContactBean> contactBeanList){
-//        List<SendContactBean> result = new ArrayList<>();
-//        for (ContactBean contactBean : contactBeanList) {
-//            result.add(new SendContactBean())
-//        }
-//    }
+    public static List<SendContactBean> getSendContactList(List<ContactBean> contactBeanList){
+        List<SendContactBean> result = new ArrayList<>();
+        for (ContactBean contactBean : contactBeanList) {
+            result.add(new SendContactBean(contactBean.getGrade(), contactBean.getName(), contactBean.getPhone()));
+        }
+        return result;
+    }
 
-    public static String getContactsJson(List<ContactBean> contactBeanList) {
+    public static String getContactsJson(List<SendContactBean> contactBeanList) {
         Gson gson = new Gson();
         String result = gson.toJson(contactBeanList);
         return result;

@@ -3,6 +3,8 @@ package com.developerhaoz.rteammessagehelper.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+
 /**
  * 联系人的实体类
  *
@@ -10,7 +12,7 @@ import android.os.Parcelable;
  * @date 2017/11/11.
  */
 
-public class ContactBean implements Parcelable {
+public class ContactBean implements Parcelable, SearchSuggestion {
 
     /**
      * id : 77
@@ -144,4 +146,9 @@ public class ContactBean implements Parcelable {
             return new ContactBean[size];
         }
     };
+
+    @Override
+    public String getBody() {
+        return this.name;
+    }
 }

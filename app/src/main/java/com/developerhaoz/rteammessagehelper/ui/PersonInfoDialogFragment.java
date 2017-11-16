@@ -53,7 +53,7 @@ public class PersonInfoDialogFragment extends DialogFragment {
         stringBuilder.append(mContactBean.getName());
         mTvName.setText(stringBuilder);
         mTvDormroom.setText(mContactBean.getDormitory());
-        mTvCollege.setText(mContactBean.getCollege() + "学院");
+        mTvCollege.setText(mContactBean.getCollege());
         mTvPhoneNumber.setText(mContactBean.getPhone());
 
         builder.setView(view);

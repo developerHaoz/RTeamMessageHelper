@@ -9,15 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.developerhaoz.rteammessagehelper.R;
 import com.developerhaoz.rteammessagehelper.bean.ContactBean;
 import com.developerhaoz.rteammessagehelper.bean.SendContactBean;
 import com.developerhaoz.rteammessagehelper.ui.dialog.DialogFragmentHelper;
+import com.developerhaoz.rteammessagehelper.ui.dialog.IDialogResultListener;
 import com.developerhaoz.rteammessagehelper.util.GsonUtil;
 import com.developerhaoz.rteammessagehelper.util.MessageApi;
 
@@ -48,7 +50,6 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     Toolbar mAppToolbar;
     @BindView(R.id.contact_rv_contact)
     RecyclerView mRvContact;
-    CheckBox mCbAllCheck;
     TextView mTvPin;
     TextView mTvSelectAll;
     ImageView mIvPin;
@@ -57,14 +58,18 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     private ContactsAdapter mAdapter;
     private List<ContactBean> mContactList = new ArrayList<>();
     private List<ContactBean> mCheckContactList = new ArrayList<>();
-    public static boolean isAll = false;
-    private static final String KEY_MESSAGE = "key_message";
-    private String message;
+    private static final String KEY_ACTIVITY = "key_activity";
+    private static final String KEY_TIME = "key_time";
+    private String activity;
+    private String time;
     private DialogFragment mDialogFragment;
 
-    public static void startActivity(Context context, String message) {
+    private static final String TAG = "SelectContactsActivity";
+
+    public static void startActivity(Context context, String activity, String time) {
         Intent intent = new Intent(context, SelectContactsActivity.class);
-        intent.putExtra(KEY_MESSAGE, message);
+        intent.putExtra(KEY_ACTIVITY, activity);
+        intent.putExtra(KEY_TIME, time);
         context.startActivity(intent);
     }
 
@@ -78,7 +83,8 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
         initRecyclerView();
         Intent intent = getIntent();
         if (intent != null) {
-            message = intent.getStringExtra(KEY_MESSAGE);
+            activity = intent.getStringExtra(KEY_ACTIVITY);
+            time = intent.getStringExtra(KEY_TIME);
         }
     }
 
@@ -153,22 +159,38 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     }
 
     private void allSelect() {
-        isAll = !isAll;
-        mAdapter.notifyDataSetChanged();
+        switch (mAdapter.getMode()) {
+            case -1:
+                mAdapter.setMode(ContactsAdapter.MODE_ALL_SELECT);
+                Log.d(TAG, "allSelect: " + mAdapter.getMode());
+                break;
+            case ContactsAdapter.MODE_ALL_SELECT:
+                mAdapter.setMode(ContactsAdapter.MODE_ALL_UNSELECT);
+                Log.d(TAG, "allSelect: " + mAdapter.getMode());
+                break;
+            case ContactsAdapter.MODE_ALL_UNSELECT:
+                mAdapter.setMode(ContactsAdapter.MODE_ALL_SELECT);
+                Log.d(TAG, "allSelect: " + mAdapter.getMode());
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_tip:
-                Map map = ContactsAdapter.mCheckMap;
-                for (int i = 0; i < mContactList.size(); i++) {
-                    if (map.containsKey(i)) {
-                        mCheckContactList.add(mContactList.get(i));
+
+                DialogFragmentHelper.showConfirmDailog(SelectContactsActivity.this.getSupportFragmentManager(), "确定要发短信？", new IDialogResultListener<Integer>() {
+                    @Override
+                    public void onDataResult(Integer result) {
+                        if (-1 == result) {
+                            sendMessageHttp();
+                        }
                     }
-                }
-                List<SendContactBean> sendContactList = GsonUtil.getSendContactList(mCheckContactList);
-                String contactsJson = GsonUtil.getContactsJson(sendContactList);
+                });
+
                 break;
             case R.id.main_tv_pin:
                 mRvContact.scrollToPosition(0);
@@ -185,5 +207,66 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
             default:
                 break;
         }
+    }
+
+    private void sendMessageHttp() {
+
+
+        if (mAdapter.getMode() == ContactsAdapter.MODE_ALL_SELECT) {
+            List<SendContactBean> sendContactList = GsonUtil.getSendContactList(mContactList);
+            String contactsJson = GsonUtil.getContactsJson(sendContactList);
+            sendMessageSure(contactsJson);
+            return;
+        }
+
+        Map map = ContactsAdapter.mCheckMap;
+        mCheckContactList.clear();
+        for (int i = 0; i < mContactList.size(); i++) {
+            if (map.containsKey(i)) {
+                mCheckContactList.add(mContactList.get(i));
+            }
+        }
+
+        List<SendContactBean> sendContactList = GsonUtil.getSendContactList(mCheckContactList);
+        final String contactsJson = GsonUtil.getContactsJson(sendContactList);
+        sendMessageSure(contactsJson);
+    }
+
+    private void sendMessageSure(final String contactsJson) {
+        mDialogFragment = DialogFragmentHelper.showProgress(SelectContactsActivity.this.getSupportFragmentManager(), "正在发送中...");
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    String response = MessageApi.sendMessage(activity, time, contactsJson);
+                    subscriber.onNext(response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        mDialogFragment.dismiss();
+                        Toast.makeText(SelectContactsActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ContactsAdapter.mCheckMap.clear();
     }
 }

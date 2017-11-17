@@ -33,6 +33,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     public static final int TYPE_CONTACTS = 1;
     private OnContactClickListener mListener;
 
+    private int mode = -1;
+
+    public static final int MODE_ALL_SELECT = 1;
+    public static final int MODE_ALL_UNSELECT = 2;
+
     public ContactsAdapter(List<ContactBean> contactBeanList, int type) {
         this.mContactBeanList = contactBeanList;
         this.mType = type;
@@ -44,18 +49,17 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         return new ContactViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(final ContactViewHolder holder, final int position) {
         final ContactBean contactBean = mContactBeanList.get(position);
         holder.tvName.setText(contactBean.getName());
         final LinearLayout linearLayout = holder.mLinearLayout;
         final CheckBox checkBox = holder.checked;
-        if(TYPE_SENDMESSAGE == mType){
+        if (TYPE_SENDMESSAGE == mType) {
             sendMessageType(checkBox, position, linearLayout);
         }
 
-        if(TYPE_CONTACTS == mType){
+        if (TYPE_CONTACTS == mType) {
             checkBox.setVisibility(View.GONE);
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,19 +88,36 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mCheckMap.put(position, true);
-                }else{
+                } else {
                     mCheckMap.remove(position);
                 }
             }
         });
 
-        checkBox.setChecked(mCheckMap.containsKey(position));
-
-        if(SelectContactsActivity.isAll){
-            checkBox.setChecked(true);
-        }else{
-            checkBox.setChecked(false);
+        switch (getMode()) {
+            case -1:
+                checkBox.setChecked(mCheckMap.containsKey(position));
+                break;
+            case MODE_ALL_SELECT:
+                checkBox.setChecked(true);
+                break;
+            case MODE_ALL_UNSELECT:
+                checkBox.setChecked(false);
+                break;
+            default:
+                checkBox.setChecked(mCheckMap.containsKey(position));
+                break;
         }
+
+    }
+
+    public int getMode(){
+        return this.mode;
+    }
+
+    public void setMode(int newMode){
+        this.mode = newMode;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -107,11 +128,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         return mContactBeanList.size();
     }
 
-    public interface OnContactClickListener{
+    public interface OnContactClickListener {
         void onClick(ContactBean contactBean);
     }
 
-    public void setOnClickListener(OnContactClickListener listener){
+    public void setOnClickListener(OnContactClickListener listener) {
         this.mListener = listener;
     }
 

@@ -68,13 +68,7 @@ public class EditMessageActivity extends AppCompatActivity {
                 if("".equals(time) || "".equals(activityName)){
                     Toast.makeText(EditMessageActivity.this, "活动名称和活动时间不能为空", Toast.LENGTH_SHORT).show();
                 }else{
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String prefix = "「广工轮俱」亲爱的广工轮俱 R13 成员苟雅莉你好，广工轮俱将于";
-                    stringBuilder.append(prefix);
-                    stringBuilder.append(time);
-                    stringBuilder.append("进行" + activityName);
-                    stringBuilder.append(",请准时参加。");
-                    DisplayMessageActivity.startActivity(EditMessageActivity.this, String.valueOf(stringBuilder));
+                    DisplayMessageActivity.startActivity(EditMessageActivity.this, activityName, time);
                 }
 
             }

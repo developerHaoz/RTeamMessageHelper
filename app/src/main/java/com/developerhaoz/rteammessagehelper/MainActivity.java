@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.developerhaoz.rteammessagehelper.bean.ContactBean;
 import com.developerhaoz.rteammessagehelper.ui.ContactsAdapter;
@@ -41,7 +42,7 @@ import rx.schedulers.Schedulers;
  * @date 2017/11/11.
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DialogFragment mDialogFragment;
 
-    public static void startActivity(Context context){
+    public static void startActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
@@ -90,11 +91,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialogFragment.setOnResultListener(new PasswordDialogFragment.OnResultListener() {
             @Override
             public void onDataResult(String password) {
-//                        if(PASSWORD.equals(password)){
+                if (PASSWORD.equals(password)) {
                     EditMessageActivity.startActivity(MainActivity.this);
-//                        }else {
-//                            Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
-//                        }
+                } else {
+                    Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         dialogFragment.show(MainActivity.this.getSupportFragmentManager(), dialogFragment.getClass().getSimpleName());
@@ -152,14 +153,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.toolbar_tip:
                 ensurePassword();
                 break;
             case R.id.main_rl_search:
                 SearchContactsActivity.startActivity(this, mContactBeanList);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 }

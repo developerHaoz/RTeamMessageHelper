@@ -25,14 +25,13 @@ public class MessageApi {
     private static final String KEY_DATE = "date";
     private static final String KEY_MEMBERS = "members";
 
-    public static String sendMessage(String message, String membersJson) throws IOException{
+    public static String sendMessage(String activity, String time, String membersJson) throws IOException{
 
         RequestCall requestCall = new PostFormBuilder()
                 .url(URL_SEND_MESSAGE)
-                .addParams(KEY_ACTIVITY, "第一次会员训练")
-                .addParams(KEY_DATE, "本周二下午四点半到六点")
-                .addParams(KEY_MEMBERS, "[{\"grade\":\"R13\",\"name\":\"李泽浩\",\"phone\":\"15626144073\"}]")
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addParams(KEY_ACTIVITY, activity)
+                .addParams(KEY_DATE, time)
+                .addParams(KEY_MEMBERS, membersJson)
                 .build();
 
         Response response = requestCall.doSceneSync();

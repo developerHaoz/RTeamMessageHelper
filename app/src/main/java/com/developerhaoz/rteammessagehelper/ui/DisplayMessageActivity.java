@@ -28,11 +28,16 @@ public class DisplayMessageActivity extends AppCompatActivity {
     TextView mTvMessage;
     Button mBtnSelect;
 
-    public static final String KEY_MESSAGE = "key_message";
+    private static final String KEY_ACTIVITY = "key_activity";
+    private static final String KEY_TIME = "key_time";
 
-    public static void startActivity(Context context, String message) {
+    private String activty;
+    private String time;
+
+    public static void startActivity(Context context, String activity, String time) {
         Intent intent = new Intent(context, DisplayMessageActivity.class);
-        intent.putExtra(KEY_MESSAGE, message);
+        intent.putExtra(KEY_ACTIVITY, activity);
+        intent.putExtra(KEY_TIME, time);
         context.startActivity(intent);
     }
 
@@ -45,14 +50,21 @@ public class DisplayMessageActivity extends AppCompatActivity {
         initToolbar();
         Intent intent = getIntent();
         if (getIntent() != null) {
-            String message = intent.getStringExtra(KEY_MESSAGE);
-            mTvMessage.setText(message);
+            activty = intent.getStringExtra(KEY_ACTIVITY);
+            time = intent.getStringExtra(KEY_TIME);
+            StringBuilder stringBuilder = new StringBuilder();
+            String prefix = "「广工轮俱」亲爱的广工轮俱 R13 成员苟雅莉你好，广工轮俱将于";
+            stringBuilder.append(prefix);
+            stringBuilder.append(time);
+            stringBuilder.append("进行" + activty);
+            stringBuilder.append(",请准时参加。");
+            mTvMessage.setText(stringBuilder);
         }
 
         mBtnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SelectContactsActivity.startActivity(DisplayMessageActivity.this, mTvMessage.getText().toString());
+                SelectContactsActivity.startActivity(DisplayMessageActivity.this, activty, time);
             }
         });
 
